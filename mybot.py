@@ -2,7 +2,7 @@ import requests
 from datetime import date, timedelta
 from bs4 import BeautifulSoup
 
-TOKEN = '1011447011:AAELdAXmAHub2lxeIIr1N-kEYRg7SAzdfac'
+TOKEN = '911305435:AAGXq7c4Qf3tUBbF4-7nZ_vYqmj4LeRaX84'
 
 def get_menu(selector, date=None):
     URL = 'http://www.kaist.edu/_prog/fodlst/?site_dvs_cd=en'
@@ -69,7 +69,7 @@ def main():
                            'LUNCH\n-----------\n' + lunch + '\n\n'
                            'DINNER\n-----------\n' + dinner + '\n\n' )
             else:
-                answer = ( 'I dont get it 😔\n'
+                answer = ( 'I dont get it \n'
                            'You can use following commands:\n'
                            '- /breakfast\n'
                            '- /lunch\n'
