@@ -108,7 +108,7 @@ def main():
                            'BREAKFAST\n-----------\n' + breakfast + '\n\n'
                            'LUNCH\n-----------\n' + lunch + '\n\n'
                            'DINNER\n-----------\n' + dinner + '\n\n' )
-            elif text == 'Im sad':
+            elif text == 'im sad':
                 j = json.loads(get_photo())
                 image = j['message']
                 answer = image
@@ -139,9 +139,18 @@ def main():
             else:
                 answer = ( 'I dont get it 😔\n'
                            'You can use following commands:\n'
-                           '- /breakfast\n'
-                           '- /lunch\n'
-                           '- /dinner\n' )
+                           'To get KAIMARU menu:\n'
+                           '- breakfast\n'
+                           '- lunch\n'
+                           '- dinner\n'
+                           'To get next shuttle bus time:\n'
+                           '- bus\n'
+                           'To calculate days left to scholarship:\n'
+                           '- scholarship\n'
+                           'To see this month KAIST calendar:\n'
+                           '- events\n'
+                           'To cheer up 🤗:\n'
+                           '- im sad\n')
 
             api_url = 'https://api.telegram.org/bot' + TOKEN + '/sendMessage'
             params = {
