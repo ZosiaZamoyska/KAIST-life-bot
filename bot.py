@@ -1,6 +1,7 @@
 import telebot
 import requests
 import json
+import re
 from bs4 import BeautifulSoup
 from datetime import date, timedelta, datetime
 
@@ -39,9 +40,25 @@ def get_time():
     html = response.content
 
     soup = BeautifulSoup(html, 'html.parser')
+    table = str(soup.find_all(summary="OLEV On-campus Shuttle"))
+    schedule = re.findall(r'<td rowspan="2">\s*(.*?)\s*\</td>', table)
 
-    schedule = soup.find_all(rowspan="2")
     return schedule
+
+def get_events():
+    URL = 'https://www.kaist.ac.kr/html/en/index.html'
+
+    response = requests.get(URL)
+    html = response.content
+
+    soup = BeautifulSoup(html, 'html.parser')
+    info = str(soup.find_all("div", {"class": "descpt"}))
+    dates = re.findall(r'<li><em>\s*(.*?)\s*\</em>', info)
+    events = re.findall(r'<li>\s*(.*?)\s*\</li>', info)
+    event = info
+  #  for i in range(len(dates)):
+ #       event[i] = dates[i] + '\n\n' + events[i]
+    return event
 
 def main():
     # https://api.telegram.org/bot<token>/METHOD_NAME
@@ -97,7 +114,28 @@ def main():
                 answer = image
             elif text == 'bus':
                 current_time = str(datetime.now().time()).split(':')
-                answer = str(get_time())
+                checker = get_time()
+                if datetime.now().weekday() == 6 or datetime.now().weekday() == 5:
+                    answer = ('Today is weekend, no bus on campus.')
+                else:
+                    for i in range(len(checker)):
+                        if int(current_time[0]) <= int(checker[i][0]+checker[i][1]):
+                            if int(current_time[1]) <= int(checker[i][3]+checker[i][4]):
+                                answer = ('Next bus will arrive at ' + str(checker[i]) + '.')
+                                break
+                            else:
+                                continue
+            elif text == 'scholarship':
+                    if int(datetime.now().day) == 25:
+                        answer = 'Yay, today is scholarship day!'
+                    else:
+                        delta = int(datetime.now().day) - 25
+                        if delta > 0:
+                            answer = ('You already received scholarship ' + str(delta) + ' days ago. Maybe you should count expenses?')
+                        else:
+                            answer = ('My condolesces, you need to wait ' + str(abs(delta)) + ' days till next scholarship. Good luck.')
+            elif text == 'events':
+                answer = get_events()
             else:
                 answer = ( 'I dont get it 😔\n'
                            'You can use following commands:\n'
@@ -114,4 +152,4 @@ def main():
 
 main()
 
-bot.polling(none_stop=False, interval=0, timeout=5)
+bot.polling(none_stop=True)
